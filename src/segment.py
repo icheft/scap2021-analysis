@@ -37,6 +37,7 @@ color_map = {
     '(D) 大鯨魚：1,000 萬以上成交量': '#00bbf9',
     '(E) 小鯨魚：200-1,000 萬成交量': '#00f5d4',
     '(F) DROPPED：200 萬以下成交量': '#979dac',
+    'All': '#266A2E'
 }
 
 df_order = {
@@ -52,7 +53,7 @@ df_order = {
 student_picker_lst = ['All', 'Student', 'Non-Student']
 
 
-def bar_with_data(data: np.ndarray, x_name: str, y_name: str) -> None:
+def bar_with_data(data: np.ndarray, x_name: str, y_name: str, color: str) -> None:
 
     value_counts = dict()
     for val in data:
@@ -92,7 +93,9 @@ def bar_with_data(data: np.ndarray, x_name: str, y_name: str) -> None:
     for i in range(len(counts)):
         dummy_dict[x_name].append(keys[i])
         dummy_dict[y_name].append(counts[i])
+
     fig = px.bar(dummy_dict, x=x_name, y=y_name, title=x_name.upper())
+    fig.update_traces(marker_color=color)
     fig.update_layout(margin=dict(b=0, l=0, r=0))
 
     return fig
@@ -445,6 +448,9 @@ def report_runner(df: pd.DataFrame):
             output_df = tmp_df
         else:
             output_df = output_df.append(tmp_df).reset_index(drop=True)
+    if len(queries) == 0:
+        st.info('No queries given. Displaying all results...')
+        output_df = df
 
     st.markdown(
         f'''{len(output_df)} out of {ori_len} ({round(len(output_df) / ori_len * 100, 2)}%)''')
@@ -457,8 +463,6 @@ def report_runner(df: pd.DataFrame):
         mime='text/csv',
     )
 
-    # st.write(output_df.groupby(['label', 'X']).agg(
-    #     'size').reset_index().sort_values('X'))
     # final target customer traits
     st.markdown('## User Profile')
 
@@ -470,28 +474,6 @@ def report_runner(df: pd.DataFrame):
     fig.update_traces(textposition='inside', textinfo='percent+label')
 
     st.plotly_chart(fig, use_container_width=True)
-
-    # values = output_df.groupby(['label']).agg(
-    #     'size').reset_index().sort_values(by='label')[0]
-
-    # specs = [[{'type': 'domain'}, {'type': 'domain'}, {'type': 'domain'}], [
-    #     {'type': 'domain'}, {'type': 'domain'}, {'type': 'domain'}]]
-    # fig = make_subplots(2, 3, specs=specs, subplot_titles=sorted(
-    #     [c[3] for c in ta_criteria]))
-
-    # ind = 0
-    # for r in range(2):
-    #     if ind >= len(values):
-    #         break
-    #     for c in range(3):
-    #         if ind >= len(values):
-    #             break
-    #         fig.add_trace(
-    #             go.Pie(values=[values[ind]], scalegroup='one'), r+1, c+1)
-    #         ind += 1
-    # fig.update_layout(margin=dict(b=0, l=0, r=0), showlegend=False)
-    # fig.update_traces(textposition='inside', textinfo='value')
-    # st.plotly_chart(fig, use_container_width=True)
 
     st.markdown('#### Age')
     fig = px.bar(output_df.groupby(['label', 'X']).agg(
@@ -576,3 +558,29 @@ def report_runner(df: pd.DataFrame):
     fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
 
     st.plotly_chart(fig, use_container_width=True)
+
+    if len(queries) <= 1:
+        load_more_charts = st.checkbox(
+            '要載入全部圖檔嗎？ (會吃大量記憶體 🥵 + 需要重新提交 custom selected features 😔)')
+        if load_more_charts:
+            more_chart = st.expander('More charts 🙈')
+
+            with more_chart:
+                for key in output_df.columns[:-10]:
+                    if key == "id":
+                        # Skip first col
+                        continue
+                    try:
+                        if len(queries) == 1:
+                            st.plotly_chart(bar_with_data(
+                                output_df[key].to_numpy().flatten(),
+                                x_name=ps.column_loader()[key],
+                                y_name='Frequency', color=color_map[queries[0]]), use_container_width=True)
+                        else:
+                            st.plotly_chart(bar_with_data(
+                                output_df[key].to_numpy().flatten(),
+                                x_name=ps.column_loader()[key],
+                                y_name='Frequency', color=color_map['All']), use_container_width=True)
+                    except:
+                        st.write(
+                            f'{ps.column_loader()[key]} ({key}) is skipped.')
