@@ -20,7 +20,10 @@ st.set_page_config(
     menu_items={
         'Get Help': None,
         'Report a bug': None,
-        'About': '''名字都是亂取的 🥶'''
+        'About': '''名字都是亂取的 🥶
+        
+📝 `More charts` 選項只有在「全不選」或是「只選一個 segment」時會顯示。
+        '''
     }
 )
 
