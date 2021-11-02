@@ -8,7 +8,7 @@ from src.component import convert_df
 from src import segment as seg
 import os
 import streamlit as st
-DEPLOY_TO_HEROKU = True
+DEPLOY_TO_HEROKU = False
 
 
 EMOJI_URL = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/chart-increasing_1f4c8.png"
@@ -20,9 +20,7 @@ st.set_page_config(
     menu_items={
         'Get Help': None,
         'Report a bug': None,
-        'About': '''**如何引出 TA 的發想**放在 `Hypo Testing - Funnel` 裡 (under `Sidebar/Select a testing method to continue`)。
-
-然後我實在是有點對現在手上的資料沒有頭緒，可能真正的 TA 還是得透過訪談後得到。'''
+        'About': '''名字都是亂取的 🥶'''
     }
 )
 
@@ -39,7 +37,7 @@ mode_selector = ["All", "Public", "Fugle"]
 
 # meeting/method
 method_selector = ["2021-10-14 | Hypo Querying",
-                   "2021-10-31 | Hypo Testing - Funnel", "2021-11-01 | Fugle Meeting"]
+                   "2021-10-31 | Hypo Testing - Funnel", "2021-11-01 | Fugle Meeting", "2021-11-02 | 15 Groups of People"]
 
 
 def pysqldf(q): return psql.sqldf(q, globals())
@@ -403,6 +401,9 @@ and M = '是';''')
                   src=app_mode, secs=secs), q1, q2, q3)
     elif app_method == method_selector[2]:
         seg.runner(load_df(include, willingness, src=app_mode, secs=secs))
+    elif app_method == method_selector[3]:
+        seg.report_runner(
+            load_df(include, willingness, src=app_mode, secs=secs))
 
 
 def main():
@@ -412,7 +413,7 @@ def main():
                                     mode_selector)
 
     app_method = st.sidebar.selectbox(
-        "Select a meeting/visualizing method to continue", method_selector, 2)
+        "Select a meeting/visualizing method to continue", method_selector, 3)
 
     sidebar_helper(app_mode=app_mode, app_method=app_method)
 
