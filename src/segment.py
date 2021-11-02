@@ -541,9 +541,9 @@ def report_runner(df: pd.DataFrame):
                        '閱讀書籍', '國外線上學習平台（如 Cousera、Udemy、edX 等）', 'YouTube 頻道', '學校上課']
 
     lich_group_df = multiple_choice_stats(output_df, columns=[
-                                          'Label', 'Channel', 'Count'], labels=ta_criteria, x_names=learn_investment_ch, y_name='R')
+                                          'Label', 'Channel', 'Count'], labels=ta_criteria, x_names=learn_investment_ch, y_name='V')
     lcch_group_df = multiple_choice_stats(output_df, columns=[
-                                          'Label', 'Channel', 'Count'], labels=ta_criteria, x_names=learn_coding_ch, y_name='V')
+                                          'Label', 'Channel', 'Count'], labels=ta_criteria, x_names=learn_coding_ch, y_name='R')
 
     st.markdown('##### 程式學習管道')
 
