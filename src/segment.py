@@ -451,6 +451,8 @@ def report_runner(df: pd.DataFrame):
     if len(queries) == 0:
         st.info('No queries given. Displaying all results...')
         output_df = df
+        output_df = output_df.assign(label='All')
+        ta_criteria = ['All']
 
     st.markdown(
         f'''{len(output_df)} out of {ori_len} ({round(len(output_df) / ori_len * 100, 2)}%)''')
@@ -561,7 +563,7 @@ def report_runner(df: pd.DataFrame):
 
     if len(queries) <= 1:
         load_more_charts = st.checkbox(
-            '要載入全部圖檔嗎？ (會吃大量記憶體 🥵 + 需要重新提交 custom selected features 😔)')
+            '要載入全部圖檔嗎？ (會吃大量記憶體 🥵）')
         if load_more_charts:
             more_chart = st.expander('More charts 🙈')
 
@@ -571,16 +573,12 @@ def report_runner(df: pd.DataFrame):
                         # Skip first col
                         continue
                     try:
-                        if len(queries) == 1:
-                            st.plotly_chart(bar_with_data(
-                                output_df[key].to_numpy().flatten(),
-                                x_name=ps.column_loader()[key],
-                                y_name='Frequency', color=color_map[queries[0]]), use_container_width=True)
-                        else:
-                            st.plotly_chart(bar_with_data(
-                                output_df[key].to_numpy().flatten(),
-                                x_name=ps.column_loader()[key],
-                                y_name='Frequency', color=color_map['All']), use_container_width=True)
+
+                        st.plotly_chart(bar_with_data(
+                            output_df[key].to_numpy().flatten(),
+                            x_name=ps.column_loader()[key],
+                            y_name='Frequency', color=color_map[ta_criteria[0]]), use_container_width=True)
+
                     except:
                         st.write(
                             f'{ps.column_loader()[key]} ({key}) is skipped.')

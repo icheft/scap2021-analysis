@@ -8,7 +8,8 @@ from src.component import convert_df
 from src import segment as seg
 import os
 import streamlit as st
-DEPLOY_TO_HEROKU = True
+
+DEPLOY_TO_HEROKU = False
 
 
 EMOJI_URL = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/chart-increasing_1f4c8.png"
