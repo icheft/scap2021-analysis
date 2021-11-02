@@ -1,4 +1,6 @@
 import streamlit as st
+from io import BytesIO
+from pyxlsb import open_workbook as open_xlsb
 import pandas as pd
 import io
 
@@ -146,6 +148,18 @@ def download_button(object_to_download, download_filename, button_text, pickle_i
 
 
 @st.cache
-def convert_df(df):
+def convert_df(df, excel=False):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    return df.to_csv(encoding='utf_8_sig')
+    if not excel:
+        return df.to_csv(encoding='utf_8_sig')
+    else:
+        output = BytesIO()
+        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+        df.to_excel(writer, index=False, sheet_name='Sheet1')
+        workbook = writer.book
+        worksheet = writer.sheets['Sheet1']
+        format1 = workbook.add_format({'num_format': '0.00'})
+        worksheet.set_column('A:A', None, format1)
+        writer.save()
+        processed_data = output.getvalue()
+        return processed_data

@@ -459,10 +459,9 @@ def report_runner(df: pd.DataFrame):
     st.write(output_df)
 
     st.download_button(
-        label=f"📓 Download (.csv)",
-        data=convert_df(output_df),
-        file_name=f'output.csv',
-        mime='text/csv',
+        label=f"📓 Download (.xlsx)",
+        data=convert_df(output_df, excel=True),
+        file_name=f'data.xlsx'
     )
 
     # final target customer traits
