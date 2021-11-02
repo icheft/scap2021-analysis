@@ -95,7 +95,10 @@ def bar_with_data(data: np.ndarray, x_name: str, y_name: str, color: str) -> Non
         dummy_dict[y_name].append(counts[i])
 
     fig = px.bar(dummy_dict, x=x_name, y=y_name, title=x_name.upper())
-    fig.update_traces(marker_color=color)
+    try:
+        fig.update_traces(marker_color=color)
+    except:
+        pass
     fig.update_layout(margin=dict(b=0, l=0, r=0))
 
     return fig
