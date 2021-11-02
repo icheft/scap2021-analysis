@@ -545,7 +545,7 @@ def report_runner(df: pd.DataFrame):
     lcch_group_df = multiple_choice_stats(output_df, columns=[
                                           'Label', 'Channel', 'Count'], labels=ta_criteria, x_names=learn_coding_ch, y_name='V')
 
-    st.markdown('##### 程式學習管道')
+    st.markdown('##### 投資理財管道')
 
     fig = px.bar(lich_group_df, x='Channel', y='Count', barmode='group', color='Label', color_discrete_map=color_map,
                  category_orders=df_order)
@@ -553,7 +553,7 @@ def report_runner(df: pd.DataFrame):
 
     st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown('##### 投資理財管道')
+    st.markdown('##### 程式學習管道')
     fig = px.bar(lcch_group_df, x='Channel', y='Count', barmode='group', color='Label', color_discrete_map=color_map,
                  category_orders=df_order)
     fig.update_layout(margin=dict(t=0, b=0, l=0, r=0))
