@@ -421,7 +421,7 @@ def runner(df: pd.DataFrame):
                     st.plotly_chart(bar_with_data(
                         output_df[key].to_numpy().flatten(),
                         x_name=ps.column_loader()[key],
-                        y_name='Frequency'
+                        y_name='Frequency', color=color_map['All']
                     ), use_container_width=True)
                 except:
                     st.write(f'{ps.column_loader()[key]} ({key}) is skipped.')
