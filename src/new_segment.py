@@ -15,39 +15,41 @@ import io
 import numpy as np
 import plotly.express as px
 
+target_no = 7
+
 profile_dict = {
     '全選': [],
-    '(A) 有望成為 API 交易人：程式 + 1,000 萬以上': [7, 25],
-    '(B) 普通有望成為 API 交易人：程式 + 200-1,000 萬': [7, 3],
-    '(C) 嘗鮮人：程式 + 200 萬以下': [7, 23],
-    '(D) 大鯨魚：1,000 萬以上成交量': [13, 25],
-    '(E) 小鯨魚：200-1,000 萬成交量': [13, 3],
-    '(F) DROPPED：200 萬以下成交量': [13, 23],
-    '鯨魚: 3000 萬以上': [0],
-    '競品的用戶: 有在用永豐 + 實際寫過 API': [2, 6],
-    '最理想用戶 I - 分或小時交易: 200-1000 萬成交量 + 分或小時交易 + 會寫程式 + 沒有實際用過 API': [3, 4, 7, 5],
-    '最理想用戶 II - 日交易: 200-1000 萬成交量 + 日交易 + 會寫程式 + 沒有實際用過 API': [3, 1, 7, 5],
+    '沒聽過': [0],
+    '聽過，手動': [1],
+    '用過套裝軟體': [2],
+    '寫過 API': [3],
+    'A\'': [4],
+    'ONLY 行情': [5],
+    '交易 API': [6],
 }
 
 color_map = {
     # color_discrete_map
-    '(A) 有望成為 API 交易人：程式 + 1,000 萬以上': '#9b5de5',
-    '(B) 普通有望成為 API 交易人：程式 + 200-1,000 萬': '#f15bb5',
-    '(C) 嘗鮮人：程式 + 200 萬以下': '#fee440',
-    '(D) 大鯨魚：1,000 萬以上成交量': '#00bbf9',
-    '(E) 小鯨魚：200-1,000 萬成交量': '#00f5d4',
-    '(F) DROPPED：200 萬以下成交量': '#979dac',
+    '沒聽過': '#9b5de5',
+    '聽過，手動': '#f15bb5',
+    '用過套裝軟體': '#fee440',
+    '寫過 API': '#00bbf9',
+    'A\'': '#198964',
+    'ONLY 行情': '#198964',
+    '交易 API': '#198964',
     'All': '#266A2E'
 }
 
 df_order = {
     # category_orders
-    'label': ['(A) 有望成為 API 交易人：程式 + 1,000 萬以上',
-              '(B) 普通有望成為 API 交易人：程式 + 200-1,000 萬',
-              '(C) 嘗鮮人：程式 + 200 萬以下',
-              '(D) 大鯨魚：1,000 萬以上成交量',
-              '(E) 小鯨魚：200-1,000 萬成交量',
-              '(F) DROPPED：200 萬以下成交量'],
+    'label': ['沒聽過',
+              '聽過，手動',
+              'A\'',
+              '用過套裝軟體',
+              '寫過 API',
+              'ONLY 行情',
+              '交易 API',
+              ],
 }
 
 student_picker_lst = ['All', 'Student', 'Non-Student']
@@ -105,35 +107,17 @@ def bar_with_data(data: np.ndarray, x_name: str, y_name: str, color: str) -> Non
 
 
 def get_custom_feature_dict(inverse=False) -> dict:
-    cfd = {0: '月交易量 3000 萬以上',
-           1: '日交易',
-           2: '有使用過 API trading',
-           3: '月交易量 200-1000 萬',
-           4: '分、小時交易',
-           5: '沒使用過 API 做交易',
-           6: '有在用永豐的人',
-           7: '會寫程式',
-           8: '僅用過套裝軟體',
-           9: '擁有 Portfolio 且有五隻股票以上',
-           10: '月交易量 51-200 萬',
-           11: '月交易量 50 萬以下',
-           12: '月交易量 51-1000 萬',
-           13: '不會寫程式',
-           14: '有一定程式能力（三、四級）',
-           15: 'Only 男',
-           16: 'Only 女',
-           17: 'Unix',
-           18: 'Python or Node.js',
-           19: '台股交易需求',
-           20: '沒有台股交易需求',
+    cfd = {0: '沒聽過',
+           1: '聽過，手動',
+           2: '用過套裝軟體',
+           3: '寫過 API',
+           4: 'A\'',
+           5: 'ONLY 行情',
+           6: '交易 API',
+           #    7: '自由業無程式能力',
+           #    8: '交易 API',
            21: '非學生',
            22: '學生',
-           23: '月交易量 200 萬以下',
-           24: '月交易量 200 萬以上',
-           25: '月交易量 1,000 萬以上',
-           26: '使用過 API',
-           27: '使用過富果行情 API',
-           28: '想到富果 API',
            }
     if inverse:
         cfd = {v: k for k, v in cfd.items()}
@@ -143,35 +127,15 @@ def get_custom_feature_dict(inverse=False) -> dict:
 def get_dict(table_name: str) -> dict:
 
     return {
-        0: f"SELECT * FROM {table_name} WHERE P LIKE '3,000%';",
-        1: f"SELECT * FROM {table_name} WHERE O LIKE '日%';",
-        2: f"SELECT * FROM {table_name} WHERE A LIKE '實際寫過程式%';",
-        3: f"SELECT * FROM {table_name} WHERE P LIKE '201%';",
-        4: f"SELECT * FROM {table_name} WHERE O LIKE '分、小時%';",
-        5: f"SELECT * FROM {table_name} WHERE A NOT LIKE '實際寫過程式%';",
-        6: f"SELECT * FROM {table_name} WHERE I LIKE '%永豐%';",
-        7: f"SELECT * FROM {table_name} WHERE T NOT LIKE '完全沒寫過%';",
-        8: f"SELECT * FROM {table_name} WHERE A LIKE '使用過套裝軟體%';",
-        9: f"SELECT * FROM {table_name} WHERE M = '是';",
-        10: f"SELECT * FROM {table_name} WHERE P LIKE '51%';",
-        11: f"SELECT * FROM {table_name} WHERE P LIKE '50%';",
-        12: f"SELECT * FROM {table_name} WHERE P LIKE '51%' OR P LIKE '201%'",
-        13: f"SELECT * FROM {table_name} WHERE T LIKE '完全沒寫過%';",
-        14: f"SELECT * FROM {table_name} WHERE (T NOT LIKE '完全沒寫過%' AND T NOT LIKE '會寫基本的程式%');",
-        15: f"SELECT * FROM {table_name} WHERE W = '男';",
-        16: f"SELECT * FROM {table_name} WHERE W = '女';",
-        17: f"SELECT * FROM {table_name} WHERE (UPPER(S) LIKE UPPER('%mac%') OR UPPER(S) LIKE UPPER('%linux%'));",
-        18: f"SELECT * FROM {table_name} WHERE (U LIKE '%Python%' OR U LIKE '%Node%');",
-        19: f"SELECT * FROM {table_name} WHERE N LIKE '%台股%';",
-        20: f"SELECT * FROM {table_name} WHERE N NOT LIKE '%台股%';",
+        0: f"SELECT * FROM {table_name} WHERE A LIKE '完全沒%';",
+        1: f"SELECT * FROM {table_name} WHERE A LIKE '僅瞭解程式%';",
+        2: f"SELECT * FROM {table_name} WHERE A LIKE '使用過套裝軟體%';",
+        3: f"SELECT * FROM {table_name} WHERE A LIKE '實際寫過程式%';",
+        4: f"SELECT * FROM {table_name} WHERE (A LIKE '完全沒%' OR A LIKE '僅瞭解程式%') AND T NOT LIKE '完全沒寫過%' AND (Z = '學生' OR Z = '自由業');",
+        5: f"SELECT * FROM {table_name} WHERE (`E` LIKE '%行情%') AND (`E` NOT LIKE '%交易%');",
+        6: f"SELECT * FROM {table_name} WHERE (`E` LIKE '%交易%' OR `E` LIKE '交易%' OR `E` LIKE '交易%') AND Z LIKE '學生';",
         21: f"SELECT * FROM {table_name} WHERE Z <> '學生';",
         22: f"SELECT * FROM {table_name} WHERE Z = '學生';",
-        23: f"SELECT * FROM {table_name} WHERE (P LIKE '50%' OR P LIKE '51%')",
-        24: f"SELECT * FROM {table_name} WHERE (P NOT LIKE '50%' AND P NOT LIKE '51%')",
-        25: f"SELECT * FROM {table_name} WHERE (P LIKE '1,000%' OR P LIKE '3,000%')",
-        26: f"SELECT * FROM {table_name} WHERE A LIKE '實際寫過程式%';",
-        27: f"SELECT * FROM {table_name} WHERE I LIKE '%富果%';",
-        28: f"SELECT * FROM {table_name} WHERE G LIKE '%富果%';",
     }
 
 
@@ -189,7 +153,7 @@ def default_ta():
 
 def multi_ta_picker():
     options = st.multiselect('Choose any profile(s) to continue', options=list(
-        profile_dict.keys())[1:7], default=list(profile_dict.keys())[1:6])
+        profile_dict.keys()), default=list(profile_dict.keys())[target_no])
 
     option = st.selectbox('學生/非學生', options=student_picker_lst)
 

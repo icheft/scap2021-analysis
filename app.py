@@ -6,10 +6,11 @@ from gsheetsdb import connect
 from src import process as ps
 from src.component import convert_df
 from src import segment as seg
+from src import new_segment
 import os
 import streamlit as st
 
-DEPLOY_TO_HEROKU = True
+DEPLOY_TO_HEROKU = False
 
 
 EMOJI_URL = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/chart-increasing_1f4c8.png"
@@ -41,7 +42,7 @@ mode_selector = ["All", "Public", "Fugle"]
 
 # meeting/method
 method_selector = ["2021-10-14 | Hypo Querying",
-                   "2021-10-31 | Hypo Testing - Funnel", "2021-11-01 | Fugle Meeting", "2021-11-02 | 15 Groups of People"]
+                   "2021-10-31 | Hypo Testing - Funnel", "2021-11-01 | Fugle Meeting", "2021-11-02 | 15 Groups of People", "2021-11-19 | #1"]
 
 
 def pysqldf(q): return psql.sqldf(q, globals())
@@ -408,6 +409,9 @@ and M = '是';''')
     elif app_method == method_selector[3]:
         seg.report_runner(
             load_df(include, willingness, src=app_mode, secs=secs))
+    elif app_method == method_selector[4]:
+        new_segment.report_runner(
+            load_df(include, willingness, src=app_mode, secs=secs))
 
 
 def main():
@@ -417,7 +421,7 @@ def main():
                                     mode_selector)
 
     app_method = st.sidebar.selectbox(
-        "Select a meeting/visualizing method to continue", method_selector, 3)
+        "Select a meeting/visualizing method to continue", method_selector, 4)
 
     sidebar_helper(app_mode=app_mode, app_method=app_method)
 
