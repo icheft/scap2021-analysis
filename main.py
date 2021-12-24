@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from src import process as pss
 from matplotlib.font_manager import FontProperties
 
-
 font = FontProperties(fname=os.path.join("tools", "DFLiHei-Bd.ttc"))
 
 
