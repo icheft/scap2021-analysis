@@ -1,5 +1,21 @@
 # SCAP Data Analysis
 
+## Telegram Analysis
+
+With some help from expectocode's [telegram-analysis](https://github.com/expectocode/telegram-analysis#examples).
+
+
+## Color Code
+
+![Image](https://i.imgur.com/DL9yiaN.png)
+
+| Item    | Hex      |
+| ------- | -------- |
+| YouTube | `ff6000` |
+| HaHow   | `ff9100` |
+| Comm    | `f4af00` |
+| others  | `c9c9c9` |
+
 ## Streamlit 
 
 1. Configuration:
