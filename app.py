@@ -7,6 +7,7 @@ from src import process as ps
 from src.component import convert_df
 from src import segment as seg
 from src import new_segment
+from src import final_segment
 import os
 import streamlit as st
 
@@ -42,7 +43,11 @@ mode_selector = ["All", "Public", "Fugle"]
 
 # meeting/method
 method_selector = ["2021-10-14 | Hypo Querying",
-                   "2021-10-31 | Hypo Testing - Funnel", "2021-11-01 | Fugle Meeting", "2021-11-02 | 15 Groups of People", "2021-11-19 | #1"]
+                   "2021-10-31 | Hypo Testing - Funnel",
+                   "2021-11-01 | Fugle Meeting",
+                   "2021-11-02 | 15 Groups of People",
+                   "2021-11-19 | #1",
+                   "2021-12-25 | #1"]
 
 
 def pysqldf(q): return psql.sqldf(q, globals())
@@ -412,6 +417,9 @@ and M = '是';''')
     elif app_method == method_selector[4]:
         new_segment.report_runner(
             load_df(include, willingness, src=app_mode, secs=secs))
+    elif app_method == method_selector[5]:
+        final_segment.report_runner(
+            load_df(include, willingness, src=app_mode, secs=secs))
 
 
 def main():
@@ -421,7 +429,7 @@ def main():
                                     mode_selector)
 
     app_method = st.sidebar.selectbox(
-        "Select a meeting/visualizing method to continue", method_selector, 4)
+        "Select a meeting/visualizing method to continue", method_selector, 5)
 
     sidebar_helper(app_mode=app_mode, app_method=app_method)
 
