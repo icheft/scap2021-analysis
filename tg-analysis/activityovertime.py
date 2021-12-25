@@ -21,7 +21,7 @@ def extract_date_and_len(event):
     # timestamp = datetime.datetime.timestamp(element)
     # text_date = datetime.strptime(event['date'], )  # date.fromtimestamp(event['date'])
     text_date = parser.parse(event['date']).date()
-    text_length = len(event['text'])
+    text_length = 1  # len(event['text'])
     return text_date, text_length
 
 
@@ -45,10 +45,22 @@ def make_ddict_in_range(json_file, binsize, start, end):
     if binsize > 1:
         # this makes binsizes ! > 1 act as 1
         curbin = 0
+        cnt = 0
         for date_text, length in dates_and_lengths:
-            if curbin == 0 or (curbin - date_text) > timedelta(days=binsize):
-                curbin = date_text
-            counter[curbin] += length
+            cur_date = date_text
+            if (curbin == 0):
+                pre_date = cur_date
+            if (curbin == 0 or cur_date - pre_date <= timedelta(days=binsize)):
+                curbin += 1
+                cnt += length
+            else:
+                pre_date = cur_date
+                counter[cur_date] = cnt
+                curbin = 0
+                cnt = 0
+                # if curbin == 0 or (curbin - date_text) > timedelta(days=binsize):
+                #     curbin = date_text
+                # print(curbin)
     else:
         for date_text, length in dates_and_lengths:
             counter[date_text] += length
@@ -119,9 +131,10 @@ def annotate_figure(filenames, binsize):
         plt.title("Activity in {}".format(filenames[0]))
 
     if binsize > 1:
-        plt.ylabel("Activity level (chars per {} days)".format(binsize), size=14)
+        plt.ylabel("Activity level (messages per {} days)".format(
+            binsize), size=14)
     else:
-        plt.ylabel("Activity level (chars per day)", size=14)
+        plt.ylabel("Activity level (messages per day)", size=14)
 
 
 def get_dates(arg_dates):
@@ -161,6 +174,7 @@ def main():
             #    chat_counter = make_ddict(jsonfile,binsize)
             chat_counter = make_ddict_in_range(
                 jsonfile, binsize, start_date, end_date)
+            # print(chat_counter)
 
         filenames.append(path.splitext(path.split(filepath)[-1])[0])
         # make filename just the name of the file,
