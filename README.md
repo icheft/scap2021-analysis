@@ -15,6 +15,7 @@ With some help from expectocode's [telegram-analysis](https://github.com/expecto
 | HaHow   | `ff9100` |
 | Comm    | `f4af00` |
 | others  | `c9c9c9` |
+| all     | `FECF0F` |
 
 ## Streamlit 
 
