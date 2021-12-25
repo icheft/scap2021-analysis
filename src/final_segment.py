@@ -19,11 +19,13 @@ target_no = 0
 
 profile_dict = {
     'TODAY': [0],
+    '寫過程式的學生': [1],
 }
 
 color_map = {
     # color_discrete_map
     'TODAY': '#9b5de5',
+    '寫過程式的學生': '#f15bb5',
     '沒聽過': '#9b5de5',
     '聽過，手動': '#f15bb5',
     '用過套裝軟體': '#fee440',
@@ -43,7 +45,8 @@ df_order = {
               '寫過 API',
               'ONLY 行情',
               '交易 API',
-              'TODAY'
+              'TODAY',
+              '寫過程式的學生'
               ],
 }
 
@@ -117,6 +120,9 @@ def get_dict(table_name: str) -> dict:
         0: f"""SELECT * FROM {table_name} 
 WHERE (A LIKE '完全沒%' OR A LIKE '僅瞭解程式%') 
 AND T NOT LIKE '完全沒寫過%' 
+AND Z = '學生';""",
+        1: f"""SELECT * FROM {table_name} 
+WHERE T NOT LIKE '完全沒寫過%' 
 AND Z = '學生';""",
         21: f"SELECT * FROM {table_name} WHERE Z <> '學生';",
         22: f"SELECT * FROM {table_name} WHERE Z = '學生';",
@@ -371,14 +377,14 @@ def runner(df: pd.DataFrame):
                 if key == "id":
                     # Skip first col
                     continue
-                # try:
-                st.plotly_chart(bar_with_data(
-                    output_df[key].to_numpy().flatten(),
-                    x_name=ps.column_loader()[key],
-                    y_name='Frequency', color=color_map['All']
-                ), use_container_width=True)
-                # except:
-                #     st.write(f'{ps.column_loader()[key]} ({key}) is skipped.')
+                try:
+                    st.plotly_chart(bar_with_data(
+                        output_df[key].to_numpy().flatten(),
+                        x_name=ps.column_loader()[key],
+                        y_name='Frequency', color=color_map['All']
+                    ), use_container_width=True)
+                except:
+                    st.write(f'{ps.column_loader()[key]} ({key}) is skipped.')
 
 
 def report_runner(df: pd.DataFrame):
@@ -528,12 +534,12 @@ def report_runner(df: pd.DataFrame):
                     if key == "id":
                         # Skip first col
                         continue
-                    # try:
-                    st.plotly_chart(bar_with_data(
-                        output_df[key].to_numpy().flatten(),
-                        x_name=ps.column_loader()[key],
-                        y_name='Frequency', color=color_map[ta_criteria[0]]), use_container_width=True)
+                    try:
+                        st.plotly_chart(bar_with_data(
+                            output_df[key].to_numpy().flatten(),
+                            x_name=ps.column_loader()[key],
+                            y_name='Frequency', color=color_map[ta_criteria[0]]), use_container_width=True)
 
-                    # except:
-                    #     st.write(
-                    #         f'{ps.column_loader()[key]} ({key}) is skipped.')
+                    except:
+                        st.write(
+                            f'{ps.column_loader()[key]} ({key}) is skipped.')
